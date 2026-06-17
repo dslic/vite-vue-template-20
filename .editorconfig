@@ -1,0 +1,22 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# ✅ 优化1: 移除 max_line_length
+# Prettier 的 printWidth 已接管代码换行, EditorConfig 的 max_line_length
+# 仅对不支持 Prettier 的文件生效, 且与 Prettier 值不一致时会造成混乱
+# 如需限制非代码文件行宽, 单独为 [*.{md,yml}] 设置
+
+# ✅ 优化2: Markdown 文件特殊处理
+[*.md]
+trim_trailing_whitespace = false
+# Markdown 中尾部空格可能是有意为之 (如换行语法), 不应自动清除
+
+# ✅ 优化3: 明确根声明
+# root = true 必须放在文件顶部, 防止编辑器向上查找父目录的 .editorconfig
