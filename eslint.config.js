@@ -38,7 +38,9 @@ export default [
     plugins: { vue: pluginVue },
     rules: {
       ...pluginVue.configs['vue3-recommended'].rules,
-      'vue/multi-word-component-names': 'off' // 按需关闭组件命名限制
+      'vue/multi-word-component-names': 'off', // 按需关闭组件命名限制
+      // 添加以下配置，允许以 _ 开头的参数不被使用
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
     }
   }
 ]
