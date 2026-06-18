@@ -10,6 +10,7 @@
 </template>
 
 <script setup>
+  import { ElButton } from 'element-plus'
   import { hasBtnPermission } from '@/utils/permission' // 封装权限函数
   // 封装权限函数
   const hasPerm = perm => hasBtnPermission(perm)

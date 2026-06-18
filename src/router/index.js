@@ -6,26 +6,25 @@ const router = createRouter({
   history: createWebHistory(),
   routes: constantRoutes // 初始只加载公开路由
 })
+
 // 路由守卫 (权限拦截核心)
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async to => {
   const permStore = usePermissionStore()
   const token = localStorage.getItem('token')
-  // 无 token: 直接跳登录
+
+  // 1. 无 token: 直接跳登录
   if (!token) {
-    to.path === '/login' ? next() : next('/login')
-    return
+    return to.path === '/login' ? true : '/login' // 如果已经在登录页则放行 (true)，否则返回登录页路径进行重定向
   }
 
-  // 有 token: 访问登录页 → 跳首页
+  // 2. 有 token: 访问登录页 → 跳首页
   if (to.path === '/login') {
-    next('/dashboard')
-    return
+    return '/dashboard'
   }
 
-  // 已加载动态路由 → 直接放行
+  // 3. 已加载动态路由 → 直接放行
   if (permStore.loadedRoutes) {
-    next()
-    return
+    return true
   }
 
   try {
@@ -37,12 +36,12 @@ router.beforeEach(async (to, from, next) => {
     accessRoutes.forEach(route => router.addRoute(route))
     // 4. 标记路由已加载
     permStore.setLoadedRoutes(true)
-    // 5. 确保路由加载完成
-    next({ ...to, replace: true })
+    // 5. 确保路由加载完成并重新触发导航 (替代 next({ ...to, replace: true }))
+    return { ...to, replace: true }
   } catch (error) {
     // 异常: 清空 token 跳登录
     localStorage.removeItem('token')
-    next('/login')
+    return '/login'
   }
 })
 
